@@ -6,7 +6,7 @@ function TempConverter() {
     const [units, setUnits] = useState('c');
 
     let ctemp, ftemp;
-    if(units == 'c') {
+    if(units === 'c') {
         ctemp = temp;
         ftemp = (temp*9/5)+32;
     } else {
@@ -17,7 +17,7 @@ function TempConverter() {
     function getHandleChange(units) {
         return (event) => {
             setUnits(units);
-            setTemp(event.target.value == '' ? '0' : parseFloat(event.target.value));
+            setTemp(event.target.value === '' ? '0' : parseFloat(event.target.value));
         };
     }
 
