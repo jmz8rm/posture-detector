@@ -14,13 +14,11 @@ function drawText(context, x, y, text) {
 
 function PoseOverlay(props) {
     const canvasRef = useRef(null);
-    const [temp, setTemp] = useState(0);
+    const setTemp = useState(0)[1];
     const [pose, setPose] = useState(null);
 
-    let interval;
-
     useEffect(() => {
-        interval = setInterval(() => setTemp(temp => temp+1), 33);
+        const interval = setInterval(() => setTemp(temp => temp+1), 33);
         return () => clearInterval(interval);
     }, []);
 
