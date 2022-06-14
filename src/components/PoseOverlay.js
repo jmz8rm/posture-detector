@@ -20,7 +20,7 @@ function PoseOverlay(props) {
     useEffect(() => {
         const interval = setInterval(() => setTemp(temp => temp+1), 33);
         return () => clearInterval(interval);
-    }, []);
+    }, [setTemp]);
 
     useEffect(() => {
         if(props.model && props.videoRef.current) {
