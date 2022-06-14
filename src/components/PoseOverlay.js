@@ -13,19 +13,34 @@ function drawText(context, x, y, text) {
 }
 
 function PoseOverlay(props) {
-    const canvasRef = useRef(null);
-    const setTemp = useState(0)[1];
-    const [pose, setPose] = useState(null);
+    const canvasRef = useRef();
 
-    useEffect(() => {
-        const interval = setInterval(() => setTemp(temp => temp+1), 33);
-        return () => clearInterval(interval);
-    }, [setTemp]);
+    const [frames, setFrames] = useState(0);
+    const [pose, setPose] = useState(null);
+    const [prevTime, setPrevTime] = useState(0);
+    const [fps, setFPS] = useState(0);
+
+    function updateFPS() {
+        if(parseInt(prevTime/1000) !== parseInt(Date.now()/1000)) {
+            setFPS(frames);
+            setFrames(1);
+            setPrevTime(Date.now());
+        } else {
+            setFrames(frames => frames+1); 
+        }
+    }
+
+    function renderIn(time) {
+        setTimeout(() => { 
+            updateFPS();
+        }, time);
+    }
 
     useEffect(() => {
         if(props.model && props.videoRef.current) {
-            props.model.estimatePoses(props.videoRef.current).then((pose) => {setPose(pose);}, (reason) => {console.log("pose error");});
-            console.log(pose); 
+            props.model.estimatePoses(props.videoRef.current).then((pose) => { setPose(pose); updateFPS(); }, (reason) => { renderIn(100);});
+        } else {
+            setTimeout(() => renderIn(100));
         }
     });
 
@@ -36,20 +51,28 @@ function PoseOverlay(props) {
 
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
+
+        context.clearRect(0, 0, canvas.width, canvas.height);
         context.drawImage(video, 0, 0);
 
-        if(pose) {
+        let activePoints = {};
+
+        if(pose && pose[0]) {
             for(const point of pose[0].keypoints) {
                 if(point.score > 0.4) {
                     drawCircle(context, point.x, point.y);
                     drawText(context, point.x+5, point.y-5, point.name);
+                    activePoints[point.name] = { x: point.x, y: point.y };
                 }
             }
         }
     }
 
     return (
-        <canvas ref={canvasRef} style={{display:"block"}}/>
+        <div className="PoseOverlay">
+            <canvas ref={canvasRef} style={{display:"block"}}/>
+            FPS: {fps}
+        </div>
     );
 }
 

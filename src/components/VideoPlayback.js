@@ -18,14 +18,14 @@ function VideoPlayback() {
     // get video stream and MoveNet model
     useEffect(() => {
         navigator.mediaDevices.getUserMedia({video: true}).then((stream) => {setStream(stream);});
-        poseDetection.createDetector(poseDetection.SupportedModels.MoveNet).then((model) => {setModel(model);}, (reason) => {console.log("model failed");});
+        poseDetection.createDetector(poseDetection.SupportedModels.MoveNet).then((model) => {setModel(model); console.log("model made");}, (reason) => {console.log("failed to make model");});
     }, []);
 
     // check for when stream ends
     useEffect(() => {
         if(stream) stream.addEventListener("inactive", () => {setStream(null);});
     }, [stream]);
-
+    
     return (
         <div className="VideoPlayback">
             <Video stream={stream} videoRef={videoRef} />
