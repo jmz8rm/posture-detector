@@ -3,7 +3,7 @@ function Video(props) {
 
     return (
         <div className="Video" hidden={true}>
-            <video ref={props.videoRef} autoPlay={true} />
+            <video ref={props.videoRef} autoPlay={true} playsInline={true}/>
         </div>
     );
 }

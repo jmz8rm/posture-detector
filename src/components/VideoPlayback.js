@@ -9,11 +9,7 @@ function VideoPlayback() {
     const [stream, setStream] = useState(null);
     const [model, setModel] = useState(null);
     
-    // if(!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)) return (
-    //     <div className="VideoPlayback">
-    //         "No video input detected."
-    //     </div>
-    // );
+    const hide = !(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
 
     // get video stream and MoveNet model
     useEffect(() => {
@@ -27,9 +23,12 @@ function VideoPlayback() {
     }, [stream]);
     
     return (
-        <div className="VideoPlayback">
-            <Video stream={stream} videoRef={videoRef} />
-            <PoseOverlay videoRef={videoRef} model={model} active={stream || false} />
+        <div>
+            <p hidden={!hide}>No video input detected</p>
+            <div className="VideoPlayback" hidden={hide}>
+                <Video stream={stream} videoRef={videoRef} />
+                <PoseOverlay videoRef={videoRef} model={model} active={stream || false} />
+            </div>
         </div>
     );
 }
